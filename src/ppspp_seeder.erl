@@ -22,8 +22,8 @@
 -behaviour(gen_server).
 
 %% -include("../include/ppspp.hrl").
--include("../include/ppspp_records.hrl").
--include("../include/swirl.hrl").
+-include("ppspp_records.hrl").
+-include("swirl.hrl").
 %% API
 -export([start_link/1,
          start_link/2]).
