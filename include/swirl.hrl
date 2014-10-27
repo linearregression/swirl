@@ -35,18 +35,19 @@
 -type peer_type()     :: static | live | injector.
 -type leecher_state() :: tune_in | streaming | normal.
 
--record(options, {
-          %% SWARM options
-          ppspp_swarm_id                     :: bitstring(),
-          ppspp_version                      :: version(), 
-          ppspp_minimum_version              :: version() ,
-          ppspp_chunking_method              :: byte(),
-          ppspp_integrity_check_method       :: byte(),
-          ppspp_merkle_hash_function         :: byte(),
-          ppspp_live_signature_algorithm,
-          ppspp_live_discard_window
-          %% supported_messges,
-         }).
+-record(options,
+{
+%% SWARM options
+ppspp_swarm_id                     :: bitstring(),
+ppspp_version         = ?PPSPP_CURRENT_VERSION                 :: version(), 
+ppspp_minimum_version = ?PPSPP_CURRENT_VERSION                 :: version(),
+ppspp_chunking_method = ?PPSPP_DEFAULT_CHUNK_ADDRESSING_METHOD :: byte(),
+ppspp_integrity_check_method       :: byte(),
+ppspp_merkle_hash_function = ?PPSPP_DEFAULT_MERKLE_HASH_FUNCTION :: byte(),
+ppspp_live_signature_algorithm = ,
+ppspp_live_discard_window
+%% supported_messges,
+}).
 
 -record(peer, {
           %% SERVER state variables
