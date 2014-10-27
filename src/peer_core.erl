@@ -18,7 +18,7 @@
 %% @end
 -module(peer_core).
 
--include("../include/ppspp_records.hrl").
+-include("swirl.hrl").
 
 -export([init_server/2,
          update_state/3,

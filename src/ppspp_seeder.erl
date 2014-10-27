@@ -18,11 +18,13 @@
 %% @end
 
 -module(ppspp_seeder).
-
+-include("swirl.hrl").
 -behaviour(gen_server).
 
--include("ppspp_records.hrl").
--include("swirl.hrl").
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+-spec test() -> term().
+-endif.
 
 %% API
 -export([start_link/1,

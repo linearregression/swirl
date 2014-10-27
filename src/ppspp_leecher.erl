@@ -21,9 +21,7 @@
 
 -behaviour(gen_server).
 
-%% -include("../include/ppspp.hrl").
--include("../include/ppspp_records.hrl").
--include("../include/swirl.hrl").
+-include("swirl.hrl").
 
 -define(INTERVAL, 3000).
 

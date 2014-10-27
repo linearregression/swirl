@@ -19,7 +19,6 @@
 %% @end
 
 -module(ppspp_message).
--include("ppspp_records.hrl").
 -include("swirl.hrl").
 
 -ifdef(TEST).
