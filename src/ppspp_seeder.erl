@@ -21,14 +21,9 @@
 
 -behaviour(gen_server).
 
-%% -include("../include/ppspp.hrl").
-<<<<<<< HEAD
 -include("ppspp_records.hrl").
 -include("swirl.hrl").
-=======
--include("../include/ppspp_records.hrl").
--include("../include/swirl.hrl").
->>>>>>> 6b3a8b74e99dedfe41df6aef77de04b627422dc3
+
 %% API
 -export([start_link/1,
          start_link/2]).
