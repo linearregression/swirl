@@ -61,7 +61,6 @@
 
 
 %% values used within the option parser
--define(PPSPP_END_OPTION,             255:?BYTE). %% 0. The key is sufficient
 
 
 %% values used within the option parser
