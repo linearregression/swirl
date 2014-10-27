@@ -111,14 +111,14 @@ unpack3(<<Maybe_Message_Type:?PPSPP_MESSAGE_SIZE, Rest/binary>>,
             Swarm_Options).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% route to specific parser per message type, with swarm options if required
--spec route_to(message_type(), binary(), ppspp_options:options()) ->
+-spec route_to(message_type(), binary(), ppspp_options:options()) -> 
     {message(), binary()} | {error, atom()}.
 route_to(handshake, Binary, _) ->
-    {Handshake, Maybe_Messages} = ppspp_handshake:unpack(Binary),
+    {Handshake, Maybe_Messages} =  ppspp_handshake:unpack(Binary),
     {Handshake, Maybe_Messages};
 route_to(have, Binary, Swarm_Options) ->
     Chunk_Method = ppspp_options:get_chunk_addressing_method(Swarm_Options),
-    {Have, Maybe_Messages} = ppspp_have:unpack(Chunk_Method, Binary),
+    {Have, Maybe_Messages} =  ppspp_have:unpack(Chunk_Method, Binary),
     {Have, Maybe_Messages};
 route_to(_, _, _) ->
     {error, unsupported_ppspp_message_type}.
