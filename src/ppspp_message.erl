@@ -170,8 +170,8 @@ get_message_type(Maybe_Message_Type)
 %handle({handshake, Body}) -> ppspp_handshake:handle(Body);
 
 %handle(Message) ->
-    %?DEBUG("message: handler not yet implemented ~p~n", [Message]),
-    %{ok, ppspp_message_handler_not_yet_implemented}.
+%?DEBUG("message: handler not yet implemented ~p~n", [Message]),
+%{ok, ppspp_message_handler_not_yet_implemented}.
 
 %%-----------------------------------------------------------------------------
 %% HANDSHAKE    TESTED.
@@ -222,7 +222,7 @@ handle({live, leecher}, {have, Payload}, #peer{state=tune_in} = State) ->
                                      orddict:fetch(latest_munro, Server_Data)},
                                     State),
             {ok, State#peer{state=streaming, server_data=New_Server_Data},
-                 REQUEST};
+             REQUEST};
         false ->
             Counter         = orddict:fetch(stable_munro, Server_Data)-1,
             New_Server_Data = orddict:store(stable_munro, Counter, Server_Data),
@@ -306,16 +306,16 @@ prepare(Type, {handshake, Payload}, State) ->
     {source, Channel_Id} = lists:keyfind(source, 1, orddict:fetch(channel,
                                                                   Payload)),
     Sub_Options =
-      [ {ppspp_swarm_id, (State#peer.options)#options.ppspp_swarm_id},
-        {ppspp_version,  (State#peer.options)#options.ppspp_version},
-        {ppspp_minimum_version,
-         (State#peer.options)#options.ppspp_minimum_version},
-        {ppspp_chunking_method,
-         (State#peer.options)#options.ppspp_chunking_method},
-        {ppspp_integrity_check_method,
-         (State#peer.options)#options.ppspp_integrity_check_method},
-        {ppspp_merkle_hash_function,
-         (State#peer.options)#options.ppspp_merkle_hash_function}],
+    [ {ppspp_swarm_id, (State#peer.options)#options.ppspp_swarm_id},
+      {ppspp_version,  (State#peer.options)#options.ppspp_version},
+      {ppspp_minimum_version,
+       (State#peer.options)#options.ppspp_minimum_version},
+      {ppspp_chunking_method,
+       (State#peer.options)#options.ppspp_chunking_method},
+      {ppspp_integrity_check_method,
+       (State#peer.options)#options.ppspp_integrity_check_method},
+      {ppspp_merkle_hash_function,
+       (State#peer.options)#options.ppspp_merkle_hash_function}],
 
     %% Add LIVE streaming options incase the seeder is in live stream swarm.
     Options =
@@ -413,10 +413,10 @@ process_request({Type, State}, [Leaf | Rest], Acc) when Leaf rem 2 =:= 0 ->
     Uncle_Hashes = peer_core:fetch_uncles(Type, State, Leaf),
     INTEGRITY    =
     lists:reverse(lists:map(
-      fun({Uncle, Hash}) ->
-            {ok, Integrity} = prepare(live, {integrity, Uncle, Hash}, State),
-            Integrity
-      end, Uncle_Hashes)),
+                    fun({Uncle, Hash}) ->
+                            {ok, Integrity} = prepare(live, {integrity, Uncle, Hash}, State),
+                            Integrity
+                    end, Uncle_Hashes)),
     {ok, DATA}     = prepare(live, {data, Leaf}, State),
     Response       = lists:flatten([DATA,INTEGRITY | Acc]),
     New_Peer_State = orddict:append(req_range, Leaf, State#peer.peer_state),

@@ -39,17 +39,17 @@ init_server(static, {Swarm_ID, State_Table}) ->
     State = #peer{},
     New_State =
     State#peer{
-       type         = static,
-       state        = normal,
-       server_data  = orddict:new(),
-       peer_table   = State_Table,
-       mtree        = Swarm_ID,
-       options      =
-       (State#peer.options)#options{
-          ppspp_swarm_id               = Swarm_ID, 
-          ppspp_integrity_check_method = ?PPSPP_DEFAULT_INTEGRITY_CHECK_METHOD
-         }
-      },
+      type         = static,
+      state        = normal,
+      server_data  = orddict:new(),
+      peer_table   = State_Table,
+      mtree        = Swarm_ID,
+      options      =
+      (State#peer.options)#options{
+                             ppspp_swarm_id               = Swarm_ID, 
+                             ppspp_integrity_check_method = ?PPSPP_DEFAULT_INTEGRITY_CHECK_METHOD
+                            }
+     },
     {ok, New_State};
 
 %% remaining types are live and injector. swarm options will remain same
@@ -57,21 +57,21 @@ init_server(Type, {Swarm_ID, State_Table}) ->
     State = #peer{},
     New_State =
     State#peer{
-       type         = Type,
-       state        = tune_in,
-       server_data  = orddict:new(),
-       peer_table   = State_Table,
-       mtree        = Swarm_ID,
-       options      =
-       (State#peer.options)#options{
-          ppspp_swarm_id               = Swarm_ID, 
-          ppspp_live_discard_window    = ?PPSPP_DEFAULT_LIVE_DISCARD_WINDOW,
-          ppspp_integrity_check_method =
-          ?PPSPP_DEFAULT_LIVE_INTEGRITY_CHECK_METHOD,
-          ppspp_live_signature_algorithm =
-          ?PPSPP_DEFAULT_LIVE_SIGNATURE_ALGORITHM
-         }
-    },
+      type         = Type,
+      state        = tune_in,
+      server_data  = orddict:new(),
+      peer_table   = State_Table,
+      mtree        = Swarm_ID,
+      options      =
+      (State#peer.options)#options{
+                             ppspp_swarm_id               = Swarm_ID, 
+                             ppspp_live_discard_window    = ?PPSPP_DEFAULT_LIVE_DISCARD_WINDOW,
+                             ppspp_integrity_check_method =
+                             ?PPSPP_DEFAULT_LIVE_INTEGRITY_CHECK_METHOD,
+                             ppspp_live_signature_algorithm =
+                             ?PPSPP_DEFAULT_LIVE_SIGNATURE_ALGORITHM
+                            }
+     },
     {ok, New_State}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -61,7 +61,7 @@ insert(Table, {Peer, State}) ->
 -spec insert_new(atom(), {string(), server()}) -> true | false.
 insert_new(Table, Peer) ->
     peer_store:insert(Table, {Peer, orddict:new()}).
-    %ets:insert_new(Table, {Bin, Hash, Data}).
+%ets:insert_new(Table, {Bin, Hash, Data}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc searches for a given peer in the table and returns its state.

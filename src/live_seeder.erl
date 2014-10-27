@@ -76,28 +76,28 @@ start_link({Type, Swarm_ID}, Swarm_Options) ->
 %%--------------------------------------------------------------------
 init([{Type, Swarm_ID}]) ->
     {Integrity_Check_Method, Live_Sig_Algo, Live_Discard_Window} =
-            if
-                Type =:= static ->
-                    { ?PPSPP_DEFAULT_INTEGRITY_CHECK_METHOD, none, none};
-                Type =:= live orelse Type =:= injector -> 
-                    { ?PPSPP_DEFAULT_LIVE_INTEGRITY_CHECK_METHOD,
-                      ?PPSPP_DEFAULT_LIVE_SIGNATURE_ALGORITHM,
-                      ?PPSPP_DEFAULT_LIVE_DISCARD_WINDOW 
-                    } 
-            end,
+    if
+        Type =:= static ->
+            { ?PPSPP_DEFAULT_INTEGRITY_CHECK_METHOD, none, none};
+        Type =:= live orelse Type =:= injector -> 
+            { ?PPSPP_DEFAULT_LIVE_INTEGRITY_CHECK_METHOD,
+              ?PPSPP_DEFAULT_LIVE_SIGNATURE_ALGORITHM,
+              ?PPSPP_DEFAULT_LIVE_DISCARD_WINDOW 
+            } 
+    end,
     {ok, #state{
-          server_type           = Type,
-          %% TODO : decide how to name the merkle tree
-          mtree                 = Swarm_ID,
-          ppspp_swarm_id        = Swarm_ID, 
-          ppspp_version         = ?PPSPP_CURRENT_VERSION,
-          ppspp_minimum_version = ?PPSPP_CURRENT_VERSION,
-          ppspp_chunking_method = ?PPSPP_DEFAULT_CHUNK_ADDRESSING_METHOD, 
-          ppspp_integrity_check_method   = Integrity_Check_Method,
-          ppspp_merkle_hash_function     = ?PPSPP_DEFAULT_MERKLE_HASH_FUNCTION,
-          ppspp_live_signature_algorithm = Live_Sig_Algo,
-          ppspp_live_discard_window       = Live_Discard_Window 
-         }};
+            server_type           = Type,
+            %% TODO : decide how to name the merkle tree
+            mtree                 = Swarm_ID,
+            ppspp_swarm_id        = Swarm_ID, 
+            ppspp_version         = ?PPSPP_CURRENT_VERSION,
+            ppspp_minimum_version = ?PPSPP_CURRENT_VERSION,
+            ppspp_chunking_method = ?PPSPP_DEFAULT_CHUNK_ADDRESSING_METHOD, 
+            ppspp_integrity_check_method   = Integrity_Check_Method,
+            ppspp_merkle_hash_function     = ?PPSPP_DEFAULT_MERKLE_HASH_FUNCTION,
+            ppspp_live_signature_algorithm = Live_Sig_Algo,
+            ppspp_live_discard_window       = Live_Discard_Window 
+           }};
 
 init([{_Type, _Swarm_ID}, _Swarm_Options]) ->
     %% TODO : discuss the data type for Swarm_Options 
@@ -148,7 +148,7 @@ handle_msg([], _State, _Reply) ->
 %% Payload is expected to be an orddict.
 handle_msg([{handshake, Payload} | Other_Messages], State, Reply) ->
     {ok, Response} = ppspp_message:handle(State#state.server_type,
-                                 {handshake, Payload}),
+                                          {handshake, Payload}),
     handle_msg(Other_Messages, State, lists:concat([Response, Reply]));
 
 handle_msg([{ack,_Payload} | _Other_Messages], State, _Reply) ->
