@@ -61,6 +61,10 @@
 
 
 %% values used within the option parser
+-define(PPSPP_END_OPTION,             255:?BYTE). %% 0. The key is sufficient
+
+
+%% values used within the option parser
 -define(PPSPP_CURRENT_VERSION,                1). %% match IETF protocol version
 -define(PPSPP_DEFAULT_INTEGRITY_CHECK_METHOD,      ppspp_merkle_hash_tree).
 -define(PPSPP_DEFAULT_LIVE_INTEGRITY_CHECK_METHOD, ppspp_merkle_hash_tree).

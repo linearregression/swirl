@@ -19,8 +19,14 @@
 %% @end
 
 -module(ppspp_message).
+<<<<<<< HEAD
 -include("ppspp_records.hrl").
 -include("swirl.hrl").
+=======
+%-include("ppspp.hrl").
+-include("../include/ppspp_records.hrl").
+-include("../include/swirl.hrl").
+>>>>>>> 6b3a8b74e99dedfe41df6aef77de04b627422dc3
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
@@ -30,6 +36,7 @@
 %% api
 -export([unpack/1,
          pack/1,
+<<<<<<< HEAD
          get_message_type/1,
          handle/3]).
 
@@ -54,6 +61,13 @@
               message/0,
               message_type/0]).
 
+=======
+         validate_message_type/1,
+         handle/3,
+         prepare/3]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+>>>>>>> 6b3a8b74e99dedfe41df6aef77de04b627422dc3
 %% api
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc unpack a datagram segment into a PPSPP message using erlang term format
@@ -110,6 +124,7 @@ unpack(<<Maybe_Message_Type:?PPSPP_MESSAGE_SIZE, Rest/binary>>, Parsed_Messages)
     {Parsed_Message, Maybe_More_Messages} = unpack(Type, Rest),
     unpack(Maybe_More_Messages, [Parsed_Message | Parsed_Messages]);
 
+<<<<<<< HEAD
 unpack(handshake, Binary) ->
     {Handshake, Maybe_Messages} =  ppspp_handshake:unpack(Binary),
     {Handshake, Maybe_Messages};
@@ -120,6 +135,15 @@ unpack(_, _Binary) ->
 
 -spec get_message_type(non_neg_integer()) -> message_type().
 get_message_type(Maybe_Message_Type)
+=======
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pack(_) -> ok.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% private
+%%-spec unpack(binary() -> ppspp_message_type()).
+validate_message_type(Maybe_Message_Type)
+>>>>>>> 6b3a8b74e99dedfe41df6aef77de04b627422dc3
   when is_integer(Maybe_Message_Type),
        Maybe_Message_Type < ?PPSPP_MAXIMUM_MESSAGE_TYPE ->
     %% message types in the current spec version
@@ -142,6 +166,7 @@ get_message_type(Maybe_Message_Type)
     ?DEBUG("message: parser got valid message type ~p~n", [Message_Type]),
     Message_Type.
 
+<<<<<<< HEAD
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%-spec ... handle takes a tuple of {type, message_body} where body is a
@@ -167,6 +192,52 @@ get_message_type(Maybe_Message_Type)
     %?DEBUG("message: handler not yet implemented ~p~n", [Message]),
     %{ok, ppspp_message_handler_not_yet_implemented}.
 
+=======
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%-spec ... parse takes a msg_type, _data, and returns
+%%    {error, something} or {ok, {key, orddict}} for the unpacked message
+%%    [{Type, Parsed_Message}, Maybe_More_Messages]
+%% TODO parse should probably be unpack/2 and then drop validate_message_type/1
+parse(handshake, <<Channel:?PPSPP_CHANNEL_SIZE, Maybe_Options/binary>>) ->
+    [{ok, Options}, Maybe_Messages] = ppspp_options:unpack(Maybe_Options),
+    [{ok, {handshake, orddict:store(channel, Channel, Options) }}, Maybe_Messages];
+
+parse(data, _Rest) ->
+    [{data, parsed_msg}, _Rest];
+parse(ack, _Rest) ->
+    [{ack, parsed_msg}, _Rest];
+parse(have, _Rest) ->
+    [{have, parsed_msg}, _Rest];
+parse(integrity, _Rest) ->
+    [{integrity, parsed_msg}, _Rest];
+parse(pex_resv4, _Rest) ->
+    [{pex_resv4, parsed_msg}, _Rest];
+parse(pex_req, _Rest) ->
+    [{pex_req, parsed_msg}, _Rest];
+parse(signed_integrity, _Rest) ->
+    [{signed_integrity, parsed_msg}, _Rest];
+parse(request, _Rest) ->
+    [{request, parsed_msg}, _Rest];
+parse(cancel, _Rest) ->
+    [{cancel, parsed_msg}, _Rest];
+parse(choke, _Rest) ->
+    [{choke, parsed_msg}, _Rest];
+parse(unchoke, _Rest) ->
+    [{unchoke, parsed_msg}, _Rest];
+parse(pex_resv6, _Rest) ->
+    [{pex_resv6, parsed_msg}, _Rest];
+parse(pex_rescert, _Rest) ->
+    [{pex_rescert, parsed_msg}, _Rest];
+parse(ppspp_message_type_not_yet_implemented, _Rest) ->
+    [{ppspp_message_parser_not_implemented, parsed_msg}, _Rest];
+%% TODO confirm we shouldn't be able to get here by using -spec()
+parse(_, _Rest) ->
+    {error, ppspp_message_type_not_parsable}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HANDLE MESSAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+>>>>>>> 6b3a8b74e99dedfe41df6aef77de04b627422dc3
 
 %%-----------------------------------------------------------------------------
 %% HANDSHAKE    TESTED.
