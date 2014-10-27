@@ -14,7 +14,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc Live seeder is responsible for serving live stream data.
-%% <p>description goes here</p>
 %% @end
 
 -module(live_seeder).
@@ -50,8 +49,8 @@
 %%
 %% @spec start_link() -> {ok, Pid} | ignore | {error, Error}
 %% @end
-%%--------------------------------------------------------------------
-%-spec start_link({atom(), hash()})
+-spec start_link({peer_type(), ppspp_options:root_hash()}) ->
+    {ok, pid()} | ignore | {error, any()}.
 start_link({Type, Swarm_ID}) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE,
                           [{Type, Swarm_ID}], []).
