@@ -1,46 +1,48 @@
-all: clean compile
+PROJECT   = swirl
 
-deps:
-	rebar get-deps update-deps
+DEPS      = gproc
+TEST_DEPS = proper
+dep_gproc = git git://github.com/uwiger/gproc.git master
 
-clean:
-	rebar clean
+ERLC_OPTS = +debug_info
+PLT_APPS += crypto public_key compiler asn1 inets tools
 
-distclean:
-	git clean -fdx
-	git reset --hard
+escript::
 
-compile: clean deps
-	rebar compile escriptize
+include erlang.mk
 
-commit: distclean compile check
+.PHONY : doc publish run console reindent
+
+distcheck: distclean all escript dialyze tests
 	@echo "*** check indentation before git push ***"
 
-check: eunit dialyze
-
-eunit:
-		rebar clean eunit
-
-dialyze: clean
-	dialyzer -I ./include --src -r ./src \
-		-Werror_handling -Wrace_conditions -Wunderspecs
-
-dialyzer-setup:
-	dialyzer --build_plt --apps erts kernel stdlib crypto \
-		sasl common_test eunit compiler \
-		| fgrep -v dialyzer.ignore
-
-dev:
-	erl -pa ./ebin -I ./include -s crypto -smp \
-		-setcookie swirl -sname swirl \
-		+K true +A 16 \
-		-s swirl -s swirl help
+run: escript
+	./swirl
 
 console:
-	erl -pa ./ebin -I ./include -s crypto -smp \
-		-setcookie swirl -sname console \
-		+K true +A 16 \
-		-s swirl -s swirl help
+	@erl -pa ./ebin -pz deps/*/ebin \
+			-I ./include -s crypto -smp \
+			-setcookie swirl -sname swirl \
+			+K true +A 16 \
+			-s swirl -s swirl help
 
-run:
-	./swirl
+doc:
+	@rm -rf public
+	@echo doc: building site in public/
+	@(cd site && hugo --config=config.yaml --destination=../public -v)
+
+publish: doc
+	@echo publish: shipping site from public/ to gs://www.swirl-project.org/
+	@gsutil -m rm -R gs://www.swirl-project.org/**
+	@gsutil -m cp -R -z html,md,css,xml,js,svg  public/* gs://www.swirl-project.org/
+
+reindent:
+	@# requires either vim 7.4, or github.com/vim-erlang/vim-erlang-runtime
+	@# this should indent the same as emacs erlang major mode or it's a bug
+	@# add -c ':set runtimepath^=~/v/.vim/bundle/vim-erlang-runtime/' if less
+	vim -ENn -u NONE \
+			-c 'filetype plugin indent on' \
+			-c 'set expandtab shiftwidth=4' \
+			-c 'args src/*.?rl test/*.?rl' \
+			-c 'argdo silent execute "normal gg=G" | update' \
+			-c q

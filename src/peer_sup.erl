@@ -15,6 +15,11 @@
 -module(peer_sup).
 -include("swirl.hrl").
 
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+-spec test() -> term().
+-endif.
+
 -behaviour(supervisor).
 
 %% api
@@ -47,7 +52,7 @@ init([])->
     MaxRestarts = 10,
     MaxSecondsBetweenRestarts = 60,
     Options = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
-    Restart = permanent,
+    Restart = transient,
     Shutdown = 1000,
     Type = worker,
 
