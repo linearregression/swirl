@@ -30,6 +30,7 @@
 -export([unpack_channel/1,
          unpack_with_rest/1,
          pack/1,
+         is_channel_zero/1,
          where_is/1,
          acquire_channel/1,
          release_channel/1,
@@ -112,6 +113,18 @@ release_channel(Channel) ->
         true -> ok;
         _ -> {error, ppspp_channel_free_unassigned_channel}
     end.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% is_channel_zero
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% @doc compare given channel for the handshake channel
+%% <p> All other channels must be assigned to a specific swarm or the datagram
+%% unpacker will reject them. Channel zero is the channel used during initial
+%% handshaking to negotiate and agree a dedicated channel. </p>
+%% @end
+-spec is_channel_zero(channel()) -> true | false.
+is_channel_zero({channel, 0}) -> true;
+is_channel_zero({channel, _}) -> false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% where_is
