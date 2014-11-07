@@ -57,19 +57,34 @@ unpack(Message) ->
 pack(_Message) -> <<>>.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%-spec ... handle takes a tuple of {type, message_body} where body is a
-%%    parsed orddict message and returns either
-%%    {error, something} or tagged tuple for the unpacked message
-%%    {ok, reply} where reply is probably an orddict to be sent to the
-%%    alternate peer.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The payload of the HANDSHAKE message is a channel ID (see
-%  Section 3.11) and a sequence of protocol options.  Example options
-%  are the content integrity protection scheme used and an option to
-%  specify the swarm identifier.  The complete set of protocol options
-%  are specified in Section 7.
+%% The payload of the HANDSHAKE message is a channel ID (see
+%%  Section 3.11) and a sequence of protocol options.  Example options
+%%  are the content integrity protection scheme used and an option to
+%%  specify the swarm identifier.  The complete set of protocol options
+%%  are specified in Section 7.
+%%
+%% handshake needs the endpoint info, and will set up a new channel if the
+%% requested swarm is available, and the options are compatible. The linking
+%% of the swarm and external peer's address together should be registered
+%% with the swarm handler.
+%%
+%%  {handshake,
+%%    {channel,3349748573},
+%%    {options,
+%%     [{chunk_addressing_method,
+%%       chunking_32bit_chunks},
+%%      {chunk_size,1024},
+%%      {content_integrity_check_method,
+%%       merkle_hash_tree},
+%%      {merkle_hash_tree_function,sha},
+%%      {minimum_version,1},
+%%      {swarm_id,
+%%       <<200,152,0,191,200,46,208,30,214,
+%%         227,191,213,64,140,81,39,68,145,
+%%         247,212>>},
+%%      {version,1}]}}.
 -spec handle(ppspp_message:message()) -> any().
+
 handle({handshake, _Body}) ->
     {ok, ppspp_message_handler_not_yet_implemented};
 
