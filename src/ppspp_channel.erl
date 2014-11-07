@@ -32,6 +32,7 @@
          pack/1,
          is_channel_zero/1,
          where_is/1,
+         get_swarm_id/1,
          acquire_channel/1,
          release_channel/1,
          channel_to_string/1,
@@ -138,18 +139,24 @@ is_channel_zero({channel, _}) -> false.
 %% @end
 
 -spec where_is(channel()) -> {ok, pid()} | {error, any()}.
-where_is(Ref = {channel, _}) ->
-    case Pid = gproc:lookup_local_name(Ref) of
+where_is(Channel = {channel, _}) ->
+    case gproc:lookup_local_name(Channel) of
         undefined -> {error, ppspp_channel_not_found};
-        _ -> {ok, Pid}
+        Pid -> {ok, Pid}
     end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%-spec ... handle takes a tuple of {type, message_body} where body is a
-%%    parsed orddict message and returns either
-%%    {error, something} or tagged tuple for the unpacked message
-%%    {ok, reply} where reply is probably an orddict to be sent to the
-%%    alternate peer.
+%% @doc Looks up the swarm options for a given channel.
+
+-spec get_swarm_id(channel()) ->
+    {ok, ppspp_options:swarm_id() } | {error, any()}.
+get_swarm_id(Channel = {channel, _}) ->
+    try gproc:lookup_value({n,l,Channel}) of
+        Swarm_id -> {ok, Swarm_id}
+    catch
+        _ ->
+            {error, ppspp_channel_not_registered}
+    end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The payload of the channel message is a channel ID (see
