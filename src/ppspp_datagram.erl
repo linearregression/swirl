@@ -130,14 +130,11 @@ find_requested_swarm_options(_Datagram) ->
 %% @end
 
 -spec handle_datagram(datagram(), ppspp_options:options()) -> ok.
-handle_datagram(_Datagram, _Swarm_Options ) ->
-    %% handle/1 needs to become handle/2 as the swarm state and inbound channel
-    %% are needed to process the messages correctly.
-    %% This also needs to be moved into ppspp_message module wrt opaque typing.
-    % _Transport = orddict:fetch(transport, Datagram),
-    % lists:foreach(
-    %   fun(Message) -> ppspp_message:handle(Message) end,
-    %   orddict:fetch(messages,Datagram)),
+handle_datagram({datagram, Datagram}, Swarm_Options) ->
+    Endpoint = orddict:fetch(endpoint, Datagram),
+    Messages = orddict:fetch(messages, Datagram),
+    Mfun = fun Message(M) -> ppspp_message:handle(M) end,
+    lists:foreach(Mfun, Messages),
     ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,16 +150,11 @@ handle_datagram(_Datagram, _Swarm_Options ) ->
 %% </p>
 %% @end
 
-%% packet() = [
-%% TODO revisit specs
-%% {transport, ppspp_transport()},
-%% {messages, ppspp_messages()}
-%% ].
-
 -spec unpack(binary(), endpoint(), ppspp_options:options()) -> datagram().
 unpack(Raw_Datagram, Endpoint, Swarm_Options) ->
     {_Channel, Maybe_Messages} = ppspp_channel:unpack_with_rest(Raw_Datagram),
     Parsed_Messages = ppspp_message:unpack(Maybe_Messages, Swarm_Options),
+    %% TODO messages should probably be an opaque type in ppsppp_message.
     Parsed_Datagram = orddict:from_list([Endpoint, {messages, Parsed_Messages}]),
     {datagram, Parsed_Datagram}.
 
