@@ -63,14 +63,13 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
     Channel_Name = ppspp_channel:channel_to_string(Channel),
     Peer_as_String = peer_to_string(IP, Port),
     Endpoint_as_URI = lists:concat([ Peer_as_String, "#", Channel_Name]),
-    Endpoint = {endpoint, orddict:from_list([{ip, IP},
-                                             Channel,
-                                             {port, Port},
-                                             {uri, Endpoint_as_URI},
-                                             {transport, udp},
-                                             {socket, Socket} ])},
     ?DEBUG("dgram: received udp from ~s~n", [Endpoint_as_URI]),
-    Endpoint.
+    {endpoint, orddict:from_list([{ip, IP},
+                                  Channel,
+                                  {port, Port},
+                                  {uri, Endpoint_as_URI},
+                                  {transport, udp},
+                                  {socket, Socket} ])}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc receives datagram from peer_worker, parses & delivers to matching channel
@@ -82,6 +81,7 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
               binary()}) -> ok.
 
 handle({udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram}) ->
+    %% peek at channel to enable handling channel_zero case
     Channel = ppspp_channel:unpack_channel(Maybe_Datagram),
     Endpoint = build_endpoint(udp, Socket, Peer_IP_Address, Peer_Port, Channel),
     %% channel 0 gets special treatment, all other channels should already
@@ -160,12 +160,10 @@ handle(_Datagram, _Swarm_Options ) ->
 %% ].
 
 -spec unpack(binary(), endpoint(), ppspp_options:options()) -> datagram().
-unpack(Raw_Datagram, _Endpoint, Swarm_Options) ->
-    {Channel, Maybe_Messages} = ppspp_channel:unpack_with_rest(Raw_Datagram),
-    ?DEBUG("dgram: received on channel ~p~n",
-           [ppspp_channel:channel_to_string(Channel)]),
+unpack(Raw_Datagram, Endpoint, Swarm_Options) ->
+    {_Channel, Maybe_Messages} = ppspp_channel:unpack_with_rest(Raw_Datagram),
     Parsed_Messages = ppspp_message:unpack(Maybe_Messages, Swarm_Options),
-    Parsed_Datagram = orddict:from_list([Channel, {messages, Parsed_Messages}]),
+    Parsed_Datagram = orddict:from_list([Endpoint, {messages, Parsed_Messages}]),
     {datagram, Parsed_Datagram}.
 
 -spec pack(datagram()) -> binary().
