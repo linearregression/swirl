@@ -35,6 +35,7 @@
          get_minimum_version/1,
          get_swarm_id/1,
          get_maximum_supported_version/1,
+         use_minimum_options/0,
          use_default_options/0,
          use_default_options/1]).
 
@@ -270,7 +271,8 @@ get_maximum_supported_version(Options) ->
     get(supported_version, Options).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% @doc use_default_options/0,1 provides the options set within the PPSP draft
+%% @doc use_minimum_options/0 and use_default_options/0,1 provides standard
+%% options set within the PPSP draft as an erlang term data structure.
 %% <p> Provides a clean interface for other modules to retrieve PPSP options.
 %% Takes 1 optional parameter, a binary representing the root hash, or a string
 %% in hex. Blank swarm options are used for starting peer_workers that may
@@ -284,8 +286,16 @@ get_maximum_supported_version(Options) ->
 %% <li>minimum_version: 1</li>
 %% <li>version: 1</li>
 %% <ul>
+%% use_minimum_options/0 simply provides the smallest functional set of options
+%% to use during parsing of handshake messages. In all other message types, one
+%% can expect a full set of valid options to be retrieved from the mutually
+%% agreed swarm options that are assigned to this particular swarm / channel.
 %% </p>
 %% @end
+
+-spec use_minimum_options() -> options().
+use_minimum_options() ->
+    {options, orddict:from_list([{minimum_version, ?PPSPP_RFC_VERSION}])}.
 
 -spec use_default_options() -> options().
 use_default_options() ->
