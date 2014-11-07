@@ -67,9 +67,9 @@ stop(Swarm_id) ->
 
 -spec where_is(ppspp_options:swarm_id()) -> {ok, pid()} | {error,_}.
 where_is(Swarm_id) ->
-    case Pid = gproc:lookup_local_name({?MODULE, Swarm_id}) of
+    case gproc:lookup_local_name({?MODULE, Swarm_id}) of
         undefined -> {error, ppspp_swarm_worker_not_found};
-        _ -> {ok, Pid}
+        Pid -> {ok, Pid}
     end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
