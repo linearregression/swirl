@@ -117,6 +117,9 @@ unpack_on_existing_channel(Channel, Maybe_Datagram, Endpoint) ->
 
 -spec find_requested_swarm_options(datagram()) ->
     {ok, ppspp_options:options()} | {error, any()}.
+find_requested_swarm_options(_Datagram) ->
+    Swarm_id = "c89800bfc82ed01ed6e3bfd5408c51274491f7d4",
+    {ok, ppspp_options:use_default_options(Swarm_id)}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc Handle a fully unpacked datagram.
