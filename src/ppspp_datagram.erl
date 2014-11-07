@@ -29,7 +29,6 @@
 %% api
 -export([handle/1,
          handle/2,
-         handle_datagram/2,
          unpack/3,
          pack/1]).
 
@@ -55,7 +54,6 @@ peer_to_string(Peer, Port) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc translates raw udp packet into a tidy structure for later use
-%% @spec
 %% @end
 
 -spec build_endpoint(udp, inet:socket(), inet:ip_address(), inet:port_number(),
@@ -76,38 +74,60 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc receives datagram from peer_worker, parses & delivers to matching channel
-%% @spec handle_datagram() -> ok
+%% It's usually called from a spawned process, so return values are eventually
+%% ignored.
 %% @end
 
-%% TODO handle/1 is simply a place holder so we can continue on parser while
-%% integrating a better peer_worker. This code must be purged!
 -spec handle({udp, inet:socket(), inet:ip_address(), inet:port_number(),
               binary()}) -> ok.
-handle(Packet) ->
-    Root_Hash = "c39e",
-    handle(Packet, ppspp_options:use_default_options(Root_Hash)),
-    ok.
 
--spec handle({udp, inet:socket(), inet:ip_address(), inet:port_number(),
-              binary()}, ppspp_options:options()) -> ok.
-
-handle(_Packet = {udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram},
-       Swarm_Options) ->
+handle({udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram}) ->
     Channel = ppspp_channel:unpack_channel(Maybe_Datagram),
     Endpoint = build_endpoint(udp, Socket, Peer_IP_Address, Peer_Port, Channel),
-    Datagram = unpack(Maybe_Datagram, Endpoint, Swarm_Options),
+    %% channel 0 gets special treatment, all other channels should already
+    %% exist and be available for lookup in gproc to find associated swarm
+    %% and options. The swarm options are required for the parser.
+    {Datagram, Swarm_Options} =
+    case ppspp_channel:is_channel_zero(Channel) of
+        true -> unpack_on_channel_zero(Channel, Maybe_Datagram, Endpoint);
+        false -> unpack_on_existing_channel(Channel, Maybe_Datagram, Endpoint)
+    end,
     ?DEBUG("dgram: got valid datagram ~p~n", [Datagram]),
-    % NB usually called from spawned process, so return values are ignored
-    handle_datagram(Datagram, Swarm_Options).
+    handle(Datagram, Swarm_Options).
+
+-spec unpack_on_channel_zero(ppspp_channel:channel(), binary(), endpoint()) ->
+    {datagram(), ppspp_options:options()}.
+%% we pass in our minimum options as only a handshake should come
+%% in the same datagram, and we have as yet no agreed channel or options
+%% for this peer / swarm / channel -- for example, this peer can manage many
+%% swarms and we do not yet know to which swarm this packet / datagram belongs.
+unpack_on_channel_zero(_Channel, Maybe_Datagram, Endpoint) ->
+    Datagram = unpack(Maybe_Datagram, Endpoint,
+                      ppspp_options:use_minimum_options()),
+    {ok, Requested_Swarm_Options} = find_requested_swarm_options(Datagram),
+    {Datagram, Requested_Swarm_Options}.
+
+-spec unpack_on_existing_channel(ppspp_channel:channel(), binary(), endpoint()) ->
+    {datagram(), ppspp_options:options()}.
+unpack_on_existing_channel(Channel, Maybe_Datagram, Endpoint) ->
+    {ok, Swarm_id} = ppspp_channel:get_swarm_id(Channel),
+    {ok, Swarm_Options} = swarm_worker:get_swarm_options(Swarm_id),
+    Datagram = unpack(Maybe_Datagram, Endpoint, Swarm_Options),
+    {Datagram, Swarm_Options}.
+
+-spec find_requested_swarm_options(datagram()) ->
+    {ok, ppspp_options:options()} | {error, any()}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% @doc Extract PPSPP channel ID from header of datagram
-%% <p>  Each PPSPP datagram contains as the first 4 byes the inbount channel ID.
+%% @doc Handle a fully unpacked datagram.
+%% <p>  Each PPSPP datagram is complete in itself - relies only on the swarm
+%% state for deciding what responses are needed. This handle function could
+%% be transferred to a separate channel_worker process dedicated per peer.
 %% </p>
 %% @end
 
--spec handle_datagram(datagram(), ppspp_options:options()) -> ok.
-handle_datagram(_Datagram = {datagram, _Dgram_as_Dict}, _Swarm_Options) ->
+-spec handle(datagram(), ppspp_options:options()) -> ok.
+handle(_Datagram, _Swarm_Options ) ->
     %% handle/1 needs to become handle/2 as the swarm state and inbound channel
     %% are needed to process the messages correctly.
     %% This also needs to be moved into ppspp_message module wrt opaque typing.
@@ -147,3 +167,13 @@ unpack(Raw_Datagram, _Endpoint, Swarm_Options) ->
 
 -spec pack(datagram()) -> binary().
 pack(_Datagram) -> <<>>.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% test
+
+% -ifdef(TEST).
+% -spec _test() -> {ok, pid()}.
+% _test() ->
+%     start(),
+%     ?assertMatch({ok, _}, ).
+% -endif.
