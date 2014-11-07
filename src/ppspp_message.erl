@@ -121,9 +121,8 @@ route_to(have, Binary, Swarm_Options) ->
     {Have, Maybe_Messages} =  ppspp_have:unpack(Chunk_Method, Binary),
     {Have, Maybe_Messages};
 route_to(Message_Type, Binary, Options) ->
-    ?DEBUG("message: unsupported messagetype ~p  with ~p~n  and options ~p~n",
-           [Message_Type, Binary, Options]),
-    {error, ppspp_unsupported_message_type}.
+    {error, {ppspp_unsupported_message_type,
+    [Message_Type, Binary, Options]}}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
