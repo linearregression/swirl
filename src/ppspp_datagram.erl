@@ -27,8 +27,8 @@
 -endif.
 
 %% api
--export([handle/1,
-         handle/2,
+-export([handle_packet/1,
+         handle_datagram/2,
          unpack/3,
          pack/1]).
 
@@ -77,10 +77,10 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
 %% ignored.
 %% @end
 
--spec handle({udp, inet:socket(), inet:ip_address(), inet:port_number(),
+-spec handle_packet({udp, inet:socket(), inet:ip_address(), inet:port_number(),
               binary()}) -> ok.
 
-handle({udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram}) ->
+handle_packet({udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram}) ->
     %% peek at channel to enable handling channel_zero case
     Channel = ppspp_channel:unpack_channel(Maybe_Datagram),
     Endpoint = build_endpoint(udp, Socket, Peer_IP_Address, Peer_Port, Channel),
@@ -93,7 +93,7 @@ handle({udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram}) ->
         false -> unpack_on_existing_channel(Channel, Maybe_Datagram, Endpoint)
     end,
     ?DEBUG("dgram: got valid datagram ~p~n", [Datagram]),
-    handle(Datagram, Swarm_Options).
+    handle_datagram(Datagram, Swarm_Options).
 
 -spec unpack_on_channel_zero(ppspp_channel:channel(), binary(), endpoint()) ->
     {datagram(), ppspp_options:options()}.
@@ -129,8 +129,8 @@ find_requested_swarm_options(_Datagram) ->
 %% </p>
 %% @end
 
--spec handle(datagram(), ppspp_options:options()) -> ok.
-handle(_Datagram, _Swarm_Options ) ->
+-spec handle_datagram(datagram(), ppspp_options:options()) -> ok.
+handle_datagram(_Datagram, _Swarm_Options ) ->
     %% handle/1 needs to become handle/2 as the swarm state and inbound channel
     %% are needed to process the messages correctly.
     %% This also needs to be moved into ppspp_message module wrt opaque typing.
