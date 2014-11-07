@@ -84,10 +84,10 @@ pack(Messages) -> {ok, pack(Messages, [])}.
 %% recursively the remainder, accumulating valid (packed) messages.
 %% A failure anywhere in a message ultimately causes the entire iolist
 %% to be rejected.
-pack([Message, Rest], Messages_as_iolist) ->
-    pack(Rest, [pack_message(Message) | Messages_as_iolist]);
+pack([Message, Rest], Messages) ->
+    pack(Rest, [pack_message(Message) | Messages]);
 %% if head binary is empty, all messages were packed successfully
-pack([], Messages_as_iolist) -> lists:reverse(Messages_as_iolist).
+pack([], Messages) -> lists:reverse(Messages).
 
 -spec pack_message(message()) -> binary().
 pack_message(_Message) -> <<>>.
@@ -114,12 +114,10 @@ unpack3(<<Maybe_Message_Type:?PPSPP_MESSAGE_SIZE, Rest/binary>>,
 -spec route_to(message_type(), binary(), ppspp_options:options()) ->
     {message(), binary()} | {error, atom()}.
 route_to(handshake, Binary, _) ->
-    {Handshake, Maybe_Messages} =  ppspp_handshake:unpack(Binary),
-    {Handshake, Maybe_Messages};
+    ppspp_handshake:unpack(Binary);
 route_to(have, Binary, Swarm_Options) ->
     Chunk_Method = ppspp_options:get_chunk_addressing_method(Swarm_Options),
-    {Have, Maybe_Messages} =  ppspp_have:unpack(Chunk_Method, Binary),
-    {Have, Maybe_Messages};
+    ppspp_have:unpack(Chunk_Method, Binary);
 route_to(Message_Type, Binary, Options) ->
     {error, {ppspp_unsupported_message_type,
     [Message_Type, Binary, Options]}}.
