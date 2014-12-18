@@ -36,6 +36,8 @@
          stop_pool/2,
          start_swarm/1,
          stop_swarm/1,
+         start_channel/1,
+         stop_channel/1,
          start/0,
          stop/0]).
 
@@ -124,6 +126,22 @@ stop_pool(First, Last) when is_integer(First), is_integer(Last), First < Last  -
     lists:map(fun(Port) ->
                       {stop_peer(Port), Port} end,
               Ports).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% channel API
+
+%% @doc start a PPSPP channel, using the supplied peer info.
+-spec start_channel(ppspp_datagram:endpoint()) ->
+    {ok, pid()} | {error,_}.
+start_channel(Peer) ->
+    supervisor:start_child(channel_sup, [Peer]).
+
+%% @doc stop a PPSPP channel
+%% @end
+-spec stop_channel(ppspp_channel:channel()) ->
+    ok | {error, any()}.
+stop_channel(Channel) ->
+    channel_worker:stop(Channel).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% swarm API

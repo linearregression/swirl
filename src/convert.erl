@@ -40,6 +40,7 @@ bin_to_hex(Binary) when is_binary(Binary) ->
 
 -spec int_to_hex(non_neg_integer()) -> string().
 int_to_hex(Int) when is_integer(Int), Int >=0, Int =< 16#ffffffff ->
+%% TODO check if string:to_lower(integer_to_list(Int, 16)) is faster
     lists:flatten([io_lib:format("0x~8.16.0b",[Int])]).
 
 -spec bin_to_string(binary()) -> string().

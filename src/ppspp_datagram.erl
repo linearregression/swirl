@@ -29,6 +29,8 @@
 %% api
 -export([handle_packet/1,
          handle_datagram/2,
+         get_peer_uri/1,
+         get_peer_channel/1,
          unpack/3,
          pack/1]).
 
@@ -60,7 +62,7 @@ peer_to_string(Peer, Port) ->
                      ppspp_channel:channel()) ->  endpoint().
 
 build_endpoint(udp, Socket, IP, Port, Channel) ->
-    Channel_Name = ppspp_channel:channel_to_string(Channel),
+    Channel_Name = convert:int_to_hex(ppspp_channel:get_channel_id(Channel)),
     Peer_as_String = peer_to_string(IP, Port),
     Endpoint_as_URI = lists:concat([ Peer_as_String, "#", Channel_Name]),
     ?DEBUG("dgram: received udp from ~s~n", [Endpoint_as_URI]),
@@ -70,6 +72,21 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
                                   {uri, Endpoint_as_URI},
                                   {transport, udp},
                                   {socket, Socket} ])}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% @doc given an endpoint, returns the associated uri for comparison.
+%% @spec
+%% @end
+
+-spec get_peer_uri(endpoint()) -> string().
+get_peer_uri(Peer) -> get_peer_info(uri, Peer).
+
+-spec get_peer_channel(endpoint()) -> ppspp_channel:channel().
+get_peer_channel(Peer) -> get_peer_info(channel, Peer).
+
+-spec get_peer_info(uri, endpoint()) -> any().
+get_peer_info(Option, {endpoint, Peer_Dict}) ->
+    orddict:fetch(Option, Peer_Dict).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc receives datagram from peer_worker, parses & delivers to matching channel
@@ -151,8 +168,10 @@ handle_datagram({datagram, Datagram}, Swarm_Options) ->
 %% @end
 
 -spec unpack(binary(), endpoint(), ppspp_options:options()) -> datagram().
-unpack(Raw_Datagram, Endpoint, Swarm_Options) ->
-    {_Channel, Maybe_Messages} = ppspp_channel:unpack_with_rest(Raw_Datagram),
+unpack(Raw_Datagram, _Endpoint, Swarm_Options) ->
+    {Channel, Maybe_Messages} = ppspp_channel:unpack_with_rest(Raw_Datagram),
+    ?DEBUG("dgram: received on channel ~p~n",
+           [convert:int_to_hex(ppspp_channel:get_channel_id(Channel))]),
     Parsed_Messages = ppspp_message:unpack(Maybe_Messages, Swarm_Options),
     %% TODO messages should probably be an opaque type in ppsppp_message.
     Parsed_Datagram = orddict:from_list([Endpoint, {messages, Parsed_Messages}]),

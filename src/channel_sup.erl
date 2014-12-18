@@ -12,7 +12,12 @@
 %% License for the specific language governing permissions and limitations under
 %% the License.
 
--module(swirl_sup).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% @doc channel supervisor
+%% <p>manages all channel processes</p>
+%% @end
+
+-module(channel_sup).
 -include("swirl.hrl").
 
 -ifdef(TEST).
@@ -23,7 +28,8 @@
 -behaviour(supervisor).
 
 %% api
--export([start_link/0]).
+-export([start_link/0,
+         start_child/1]).
 
 %% callbacks
 -export([init/1]).
@@ -31,27 +37,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% api
 
--spec start_link() -> {ok, pid()} | {error, _}.
+-spec start_link() -> {ok, pid()} | ignore | {error, any()}.
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+-spec start_child([any()]) ->
+    {error,_} | {ok, pid()}.
+start_child([Channel]) ->
+    supervisor:start_child(?MODULE, [Channel]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% callbacks
 
--spec init([]) -> {ok,{{one_for_one, 10,60}, [supervisor:child_spec()] }}.
-init([]) ->
-    Supervisors = [ {peer_sup, {peer_sup, start_link, []},
-                     permanent,
-                     infinity,
-                     supervisor, [peer_sup]},
-                    {swarm_sup, {swarm_sup, start_link, []},
-                     permanent,
-                     infinity,
-                     supervisor, [swarm_sup]},
-                    {channel_sup, {channel_sup, start_link, []},
-                     permanent,
-                     infinity,
-                     supervisor, [channel_sup]} ],
+-spec init([]) -> {ok,{{simple_one_for_one, 10,60}, [supervisor:child_spec()] }}.
 
-    % summon the supervisors
-    {ok, {{one_for_one, 10, 60}, Supervisors}}.
+init([])->
+    RestartStrategy = simple_one_for_one,
+    MaxRestarts = 10,
+    MaxSecondsBetweenRestarts = 60,
+    Options = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
+    Restart = transient,
+    Shutdown = 1000,
+    Type = worker,
+
+    Worker = {channel_worker, {channel_worker, start_link, []},
+              Restart,
+              Shutdown,
+              Type,
+              [channel_worker]},
+
+    {ok, {Options, [Worker]}}.
