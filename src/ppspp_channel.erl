@@ -35,6 +35,7 @@
          acquire/1,
          release/1,
          get_channel_id/1,
+         get_swarm_id/1,
          handle/1]).
 
 -opaque channel() :: {channel, channel_option()}.
