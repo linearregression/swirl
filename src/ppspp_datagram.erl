@@ -74,7 +74,7 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
                                   {socket, Socket} ])}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% @doc given an endpoint, returns the associated uri for comparison.
+%% @doc given an endpoint, returns the associated data e.g. uri or channel
 %% @spec
 %% @end
 
@@ -84,7 +84,7 @@ get_peer_uri(Peer) -> get_peer_info(uri, Peer).
 -spec get_peer_channel(endpoint()) -> ppspp_channel:channel().
 get_peer_channel(Peer) -> get_peer_info(channel, Peer).
 
--spec get_peer_info(uri, endpoint()) -> any().
+-spec get_peer_info( uri | endpoint | channel, endpoint()) -> any().
 get_peer_info(Option, {endpoint, Peer_Dict}) ->
     orddict:fetch(Option, Peer_Dict).
 
@@ -147,7 +147,7 @@ find_requested_swarm_options(_Datagram) ->
 %% @end
 
 -spec handle_datagram(datagram(), ppspp_options:options()) -> ok.
-handle_datagram({datagram, Datagram}, Swarm_Options) ->
+handle_datagram({datagram, Datagram}, _Swarm_Options) ->
     Endpoint = orddict:fetch(endpoint, Datagram),
     Messages = orddict:fetch(messages, Datagram),
     Mfun = fun Message(M) -> ppspp_message:handle(M) end,
@@ -168,7 +168,7 @@ handle_datagram({datagram, Datagram}, Swarm_Options) ->
 %% @end
 
 -spec unpack(binary(), endpoint(), ppspp_options:options()) -> datagram().
-unpack(Raw_Datagram, _Endpoint, Swarm_Options) ->
+unpack(Raw_Datagram, Endpoint, Swarm_Options) ->
     {Channel, Maybe_Messages} = ppspp_channel:unpack_with_rest(Raw_Datagram),
     ?DEBUG("dgram: received on channel ~p~n",
            [convert:int_to_hex(ppspp_channel:get_channel_id(Channel))]),
