@@ -64,7 +64,7 @@ peer_to_string(Peer, Port) ->
 build_endpoint(udp, Socket, IP, Port, Channel) ->
     Channel_Name = convert:int_to_hex(ppspp_channel:get_channel_id(Channel)),
     Peer_as_String = peer_to_string(IP, Port),
-    Endpoint_as_URI = lists:concat([ Peer_as_String, "/", Channel_Name]),
+    Endpoint_as_URI = lists:concat([ Peer_as_String, "#", Channel_Name]),
     ?DEBUG("dgram: received udp from ~s~n", [Endpoint_as_URI]),
     {endpoint, orddict:from_list([{ip, IP},
                                   Channel,
