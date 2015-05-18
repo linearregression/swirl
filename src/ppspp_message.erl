@@ -120,7 +120,7 @@ route_to(have, Binary, Swarm_Options) ->
     ppspp_have:unpack(Chunk_Method, Binary);
 route_to(Message_Type, Binary, Options) ->
     {error, {ppspp_unsupported_message_type,
-    [Message_Type, Binary, Options]}}.
+             [Message_Type, Binary, Options]}}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

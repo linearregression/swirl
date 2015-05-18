@@ -95,7 +95,7 @@ get_peer_info(Option, {endpoint, Peer_Dict}) ->
 %% @end
 
 -spec handle_packet({udp, inet:socket(), inet:ip_address(), inet:port_number(),
-              binary()}) -> ok.
+                     binary()}) -> ok.
 
 handle_packet({udp, Socket, Peer_IP_Address, Peer_Port, Maybe_Datagram}) ->
     %% peek at channel to enable handling channel_zero case
