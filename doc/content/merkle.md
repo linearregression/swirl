@@ -12,7 +12,7 @@ In PPSP, by design, the integrity of any given chunk of data can be verified
 efficiently using a cryptographic signature scheme. The hashing algorithm
 itself is the well-known Merkle hash tree:
 
-![merkle hash tree](https://github.com/skunkwerks/swirl/wiki/images/merkletree-v4.png)
+![merkle hash tree]({{ .Site.Params.github }}/wiki/images/merkletree-v4.png)
 
 By transmitting with each new datagram, a set of new chunk hashes, and the new data,
 a peer can verify using any already downloaded / hashed data, and the new data, if in
@@ -78,8 +78,8 @@ Full details are of course in the [PPSPP] specification.
 - the [SHA1] specification, based on the original NIST Standard
 
 [PPSPP]: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol
-[extract]: https://github.com/skunkwerks/swirl/wiki/papers/Merkle_extract_from_thesis.pdf
-[GMSS]: https://github.com/skunkwerks/swirl/wiki/papers/Merkle_Signatures_with_Virtually_Unlimited_Signature_Capacity.pdf
-[thesis]: https://github.com/skunkwerks/swirl/wiki/papers/Secrecy_Authentication_and_Public_Key_Systems_Merkle1979.pdf
+[extract]: {{ .Site.Params.github }}/wiki/papers/Merkle_extract_from_thesis.pdf
+[GMSS]: {{ .Site.Params.github }}/wiki/papers/Merkle_Signatures_with_Virtually_Unlimited_Signature_Capacity.pdf
+[thesis]: {{ .Site.Params.github }}/wiki/papers/Secrecy_Authentication_and_Public_Key_Systems_Merkle1979.pdf
 [SHA1]: http://tools.ietf.org/html/rfc3174
 [Ralph Merkle]: http://www.merkle.com/merkleDir/papers.html

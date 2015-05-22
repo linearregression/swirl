@@ -61,9 +61,9 @@ framework, to handle testing functionality across and between modules. There are
 some internal tests in many modules in the `/src/` tree using the less flexible
 [eunit] framework.
 
-[headers]: https://github.com/skunkwerks/swirl/tree/master/include
-[source]: https://github.com/skunkwerks/swirl/tree/master/src
-[documentation]: https://github.com/skunkwerks/swirl/blob/master/doc/README.md
+[headers]: {{ .Site.Params.github }}/tree/master/include
+[source]: {{ .Site.Params.github }}/tree/master/src
+[documentation]: {{ .Site.Params.github }}/tree/master/doc/README.md
 [hugo]: https://gohugo.io/
 [hyde-x]: https://github.com/zyro/hyde-x
 [highlighting]: http://highlightjs.org/
@@ -177,10 +177,10 @@ See the [usage] section for more information on running [swirl] in practice.
 [traversal]: traversal.md
 [usage]: usage.md
 [zeroconf]: zeroconf.md
-[README]: https://github.com/skunkwerks/swirl/blob/master/README.md
+[README]: {{ .Site.Params.github }}/tree/master/README.md
 
 [release]: http://www.erlang.org/doc/design_principles/release_structure.html
 [gen_server]: http://www.erlang.org/doc/man/gen_server.html
 [supervisor]: http://www.erlang.org/doc/man/supervisor.html
 [message type]: https://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol#section-3
-[swirl]: http://www.swirl-project.org/
+[swirl]: {{ .Site.BaseURL }}

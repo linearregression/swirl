@@ -113,7 +113,7 @@ The hash tree is simple, shown with this graphic from the [tribler] project.
 Note that the data chunks are laid out along the bottom row of the graphic, and
 concatenated hashes occupy the tree's roots:
 
-![merkle hash tree](https://github.com/skunkwerks/swirl/wiki/images/merkletree-v4.png)
+![merkle hash tree]({{ .Site.Params.github }}/wiki/images/merkletree-v4.png)
 
 This final hash is known as the Root Hash in PPSPP, and the root hash, along
 with a select set of hashes as specific nodes further down the tree, is what
