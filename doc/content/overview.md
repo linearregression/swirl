@@ -67,9 +67,9 @@ PEX* stuff, then jump to [section 8], 8.1 - 8.8.  there is a summary on [merkle
 trees](merkle.md) within this documentation. A full list of related
 documentation is available in the IETF [datatracker] tool.
 
-[section 2]: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol#section-2
-[section 3]: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol#section-3
-[section 8]: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol#section-8
+[section 2]: {{ .Site.Params.ppspp }}#section-2
+[section 3]: {{ .Site.Params.ppspp }}#section-3
+[section 8]: {{ .Site.Params.ppspp }}#section-8
 
 # PPSPP Terminology
 
@@ -125,7 +125,7 @@ For more details, refer to this project's [merkle] hash tree documentation.
 
 [SHA1]: http://tools.ietf.org/html/rfc3174
 [tribler]: http://www.tribler.org/
-[tracker]: http://tools.ietf.org/html/draft-ietf-ppsp-base-tracker-protocol
+[tracker]: {{ .Site.Params.tracker }}
 [PPSPP]: https://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol
-[datatracker]: https://datatracker.ietf.org/doc/draft-ietf-ppsp-peer-protocol
-[live streaming]: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol#section-6
+[datatracker]: {{ .Site.Params.datatracker }}
+[live streaming]: {{ .Site.Params.ppspp }}#section-6

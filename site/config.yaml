@@ -22,6 +22,9 @@ params:
   copyright: "Copyright (c) 2014 - 2038 Skunkwerks GmbH; all rights reserved."
   github: https://github.com/skunkwerks/swirl
   twitter: http://twitter.com/swirl_project
+  datatracker: https://datatracker.ietf.org/doc/draft-ietf-ppsp-peer-protocol
+  ppspp: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol
+  tracker: http://tools.ietf.org/html/draft-ietf-ppsp-base-tracker-protocol
 taxonomies:
     tag: tags
 ...

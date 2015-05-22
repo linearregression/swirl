@@ -77,7 +77,7 @@ Full details are of course in the [PPSPP] specification.
 - [Ralph Merkle]'s original 1979 [thesis]
 - the [SHA1] specification, based on the original NIST Standard
 
-[PPSPP]: http://tools.ietf.org/html/draft-ietf-ppsp-peer-protocol
+[PPSPP]: {{ .Site.Params.ppspp }}
 [extract]: {{ .Site.Params.github }}/wiki/papers/Merkle_extract_from_thesis.pdf
 [GMSS]: {{ .Site.Params.github }}/wiki/papers/Merkle_Signatures_with_Virtually_Unlimited_Signature_Capacity.pdf
 [thesis]: {{ .Site.Params.github }}/wiki/papers/Secrecy_Authentication_and_Public_Key_Systems_Merkle1979.pdf
