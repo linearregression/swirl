@@ -20,6 +20,7 @@ params:
   highlight: monokai_sublime
   tagline: Bringing Peer-to-Peer Streaming to the World
   copyright: "Copyright (c) 2014 - 2038 Skunkwerks GmbH; all rights reserved."
+  blog: http://www.swirl-project.org/blog
   github: https://github.com/skunkwerks/swirl
   twitter: http://twitter.com/swirl_project
   datatracker: https://datatracker.ietf.org/doc/draft-ietf-ppsp-peer-protocol
