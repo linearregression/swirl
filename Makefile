@@ -46,6 +46,10 @@ page:
 	@echo doc: creating ./doc/content/$(page).md
 	@(cd site && hugo --config=config.yaml --format=yaml new content/$(page).md )
 
+watch: doc-clean
+	@echo doc: watching for changes
+	@(cd site && hugo server --config=config.yaml --destination=../public --verbose --watch)
+
 publish: doc
 	@echo publish: shipping site from public/ to gs://www.swirl-project.org/
 	@gsutil -m rm -R gs://www.swirl-project.org/**
