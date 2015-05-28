@@ -15,11 +15,6 @@
 -module(peer_sup).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 -behaviour(supervisor).
 
 %% api

@@ -21,11 +21,6 @@
 -module(ppspp_datagram).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 %% api
 -export([handle/1,
          handle/2,
@@ -55,7 +50,6 @@ peer_to_string(Peer, Port) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc translates raw udp packet into a tidy structure for later use
-%% @spec
 %% @end
 
 -spec build_endpoint(udp, inet:socket(), inet:ip_address(), inet:port_number(),
@@ -75,8 +69,7 @@ build_endpoint(udp, Socket, IP, Port, Channel) ->
     Endpoint.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% @doc receives datagram from peer_worker, parses & delivers to matching channel
-%% @spec handle_datagram() -> ok
+%% @doc receives datagram from peer_worker, parses and delivers to matching channel
 %% @end
 
 %% TODO handle/1 is simply a place holder so we can continue on parser while
@@ -124,7 +117,7 @@ handle_datagram(_Datagram = {datagram, _Dgram_as_Dict}, _Swarm_Options) ->
 %% <li>Endpoint containing opaque information about Transport</li>
 %% <li>list of Messages</li>
 %% <li>Opaque orddict for Options, within a handshake message</li>
-%% <ul>
+%% </ul>
 %% A single datagram MAY contain multiple PPSPP messages; these will be handled
 %% recursively as needed.
 %% </p>

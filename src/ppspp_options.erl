@@ -21,11 +21,6 @@
 -module(ppspp_options).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 %% api
 -export([unpack/1,
          pack/1,
@@ -204,7 +199,7 @@ unpack( <<>>, _Options) -> {error, ppspp_invalid_options}.
 %% <li>ppspp_minimum_version</li>
 %% <li>ppspp_swarm_id</li>
 %% <li>ppspp_version</li>
-%% <ul>
+%% </ul>
 %% </p>
 %% @end
 -spec get(option(), options()) -> any().
@@ -283,7 +278,7 @@ get_maximum_supported_version(Options) ->
 %% <li>merkle_hash_tree_function: sha</li>
 %% <li>minimum_version: 1</li>
 %% <li>version: 1</li>
-%% <ul>
+%% </ul>
 %% </p>
 %% @end
 
@@ -310,7 +305,7 @@ use_default_options(Swarm_id) when is_binary(Swarm_id) ->
 %% <li>orddicts for Transport</li>
 %% <li>orddicts for Options</li>
 %% <li>list of Messages</li>
-%% <ul>
+%% </ul>
 %% </p>
 %% @end
 -spec pack(options()) -> binary().

@@ -19,11 +19,6 @@
 -module(swirl).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 -export([main/1,
          help/0,
          quit/0,

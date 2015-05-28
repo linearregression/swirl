@@ -21,11 +21,6 @@
 -module(ppspp_handshake).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 %% api
 -export([unpack/1,
          pack/1,
@@ -42,7 +37,7 @@
 %% @doc unpack a handshake message
 %% <p>  Deconstruct PPSPP UDP datagram into multiple erlang terms, including
 %% parsing any additional data within the same segment. Any parsing failure
-%% is fatal & will propagate back to the attempted datagram unpacking.
+%% is fatal and will propagate back to the attempted datagram unpacking.
 %% </p>
 %% @end
 

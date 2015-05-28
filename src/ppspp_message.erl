@@ -21,11 +21,6 @@
 -module(ppspp_message).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 %% api
 -export([unpack/2,
          pack/1,
@@ -59,11 +54,11 @@
 %% @doc unpack a datagram segment into a PPSPP message using erlang term format
 %% <p>  Deconstruct PPSPP UDP datagram into multiple erlang terms, including
 %% parsing any additional data within the same segment. Any parsing failure
-%% is fatal & will propagate back to the attempted datagram unpacking.
+%% is fatal and will propagate back to the attempted datagram unpacking.
 %% <ul>
 %% <li>Message type</li>
 %% <li>orddict for Options</li>
-%% <ul>
+%% </ul>
 %% </p>
 %% @end
 

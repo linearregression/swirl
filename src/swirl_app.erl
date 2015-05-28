@@ -15,11 +15,6 @@
 -module(swirl_app).
 -include("swirl.hrl").
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--spec test() -> term().
--endif.
-
 -behaviour(application).
 
 %% api
