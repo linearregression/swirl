@@ -7,7 +7,7 @@ ERLC_OPTS = +debug_info
 PLT_APPS += crypto public_key compiler asn1 inets tools
 
 DOC_DEPS  = edown
-EDOC_OPTS = {doclet, edown_docklet}
+EDOC_OPTS = '[{application, ["swirl"]}, {doclet, edown_doclet}, {subpackages, false}, {top_level_readme, {"./README.md", "http://www.swirl-project.org/doc/api"}}]}.'
 
 escript::
 
