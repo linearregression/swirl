@@ -6,6 +6,9 @@ dep_gproc = git git://github.com/uwiger/gproc.git master
 ERLC_OPTS = +debug_info
 PLT_APPS += crypto public_key compiler asn1 inets tools
 
+DOC_DEPS  = edown
+EDOC_OPTS = {doclet, edown_docklet}
+
 escript::
 
 include erlang.mk
